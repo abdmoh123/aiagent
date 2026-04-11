@@ -1,5 +1,8 @@
 """Main endpoint for the ai-agent project."""
 
+import argparse
+from dataclasses import dataclass
+
 from aiagent.config import gemini_api_key
 from aiagent.models import GeminiModels
 from dotenv import load_dotenv
@@ -9,12 +12,22 @@ from google import genai
 _ = load_dotenv()
 
 
+@dataclass()
+class AppArgs:
+    """Dataclass representing the arguments a user can pass through the CLI."""
+    user_prompt: str
+
+
 def main() -> None:
     """Main entrypoint function."""
+    parser = argparse.ArgumentParser(description="AI Chatbot")
+    _ = parser.add_argument("user_prompt", type=str, help="User prompt")
+    args = AppArgs(**vars(parser.parse_args()))  # pyright: ignore[reportAny]
+
     client = genai.Client(api_key=gemini_api_key)
 
-    user_prompt: str = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
-    response = client.models.generate_content(model=GeminiModels.GEMINI_2_5_FLASH, contents=user_prompt)  # pyright: ignore[reportUnknownMemberType]
+    messages: list[Content] = [Content(role="user", parts=[Part(text=args.user_prompt)])]
+    response = client.models.generate_content(model=GeminiModels.GEMINI_2_5_FLASH, contents=messages)  # pyright: ignore[reportUnknownMemberType]
 
     metadata = response.usage_metadata
     if not metadata:
@@ -25,7 +38,7 @@ def main() -> None:
     if prompt_token_count == 0 or response_token_count == 0:
         raise RuntimeError("Prompt or response token count is 0!")
 
-    print(f"User prompt: {user_prompt}")
+    print(f"User prompt: {args.user_prompt}")
     print(f"Prompt tokens: {prompt_token_count}")
     print(f"Response tokens: {response_token_count}")
     print(f"Response:\n{response.text}")
