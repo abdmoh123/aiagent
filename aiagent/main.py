@@ -17,12 +17,14 @@ _ = load_dotenv()
 class AppArgs:
     """Dataclass representing the arguments a user can pass through the CLI."""
     user_prompt: str
+    verbose: bool = False
 
 
 def main() -> None:
     """Main entrypoint function."""
     parser = argparse.ArgumentParser(description="AI Chatbot")
     _ = parser.add_argument("user_prompt", type=str, help="User prompt")
+    _ = parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = AppArgs(**vars(parser.parse_args()))  # pyright: ignore[reportAny]
 
     client = genai.Client(api_key=gemini_api_key)
@@ -39,9 +41,10 @@ def main() -> None:
     if prompt_token_count == 0 or response_token_count == 0:
         raise RuntimeError("Prompt or response token count is 0!")
 
-    print(f"User prompt: {args.user_prompt}")
-    print(f"Prompt tokens: {prompt_token_count}")
-    print(f"Response tokens: {response_token_count}")
+    if args.verbose:
+        print(f"User prompt: {args.user_prompt}")
+        print(f"Prompt tokens: {prompt_token_count}")
+        print(f"Response tokens: {response_token_count}")
     print(f"Response:\n{response.text}")
 
 
