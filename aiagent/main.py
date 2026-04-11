@@ -7,6 +7,7 @@ from aiagent.config import gemini_api_key
 from aiagent.models import GeminiModels
 from dotenv import load_dotenv
 from google import genai
+from google.genai.types import Content, Part
 
 # Load all environment variables from a .env file if it exists
 _ = load_dotenv()
