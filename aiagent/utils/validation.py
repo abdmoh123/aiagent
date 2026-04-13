@@ -37,6 +37,7 @@ def is_path_in_working_dir(working_directory: str, path: str) -> bool:
 
     return True
 
+
 def is_path_type_valid(path_type: PathType, path: str) -> bool:
     """Validates if a path is a file or directory.
 
