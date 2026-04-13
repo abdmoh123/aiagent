@@ -10,7 +10,16 @@ from aiagent.utils.validation import (
 
 
 def get_file_content(working_directory: str, file_path: str) -> str:
-    """Function for getting a file's contents."""
+    """Function for getting a file's contents.
+
+    Args:
+        working_directory: The working directory.
+        file_path: Path to the file to read.
+
+    Returns:
+        The contents of the given file.
+        Or an error message if something went wrong.
+    """
     if not is_path_in_working_dir(working_directory, file_path):
         return generate_error_message(f'Cannot read "{file_path}" as it is outside the permitted working directory')
 
