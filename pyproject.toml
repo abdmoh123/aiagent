@@ -30,8 +30,7 @@ exclude = [ "calculator/" ]
 line-length = 80
 
 [tool.ruff.lint]
-select = ["D"]
-extend-select = ["I001", "I002"]
+extend-select = ["D", "I001", "I002"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
