@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from aiagent.config import gemini_api_key
 from aiagent.models import GeminiModels
 from aiagent.prompts import system_prompt
-from aiagent.tools import available_functions
+from aiagent.tools import available_functions, call_function
 from dotenv import load_dotenv
 from google import genai
 from google.genai.types import Content, GenerateContentConfig, Part
@@ -56,8 +56,24 @@ def main() -> None:
         print(f"Response tokens: {response_token_count}")
 
     if response.function_calls:
+        func_results: list[list[Part]] = []
         for function_call in response.function_calls:
-            print(f"Calling function: {function_call.name}({function_call.args})")
+            func_call_res = call_function(function_call, verbose=args.verbose)
+
+            func_parts = func_call_res.parts
+            if not func_parts:
+                raise ValueError("Missing parts property in function call response")
+
+            func_response = func_parts[0].function_response
+            if not func_response:
+                raise ValueError("Missing function_response property in function call response")
+            if not func_response.response:
+                raise ValueError("Missing response property in function call response")
+
+            func_results.append(func_parts)
+
+            if args.verbose:
+                print(f"-> {func_response.response}")
     else:
         print(f"Response:\n{response.text}")
 
