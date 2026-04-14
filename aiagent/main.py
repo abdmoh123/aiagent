@@ -5,9 +5,10 @@ from dataclasses import dataclass
 
 from aiagent.config import gemini_api_key
 from aiagent.models import GeminiModels
+from aiagent.prompts import system_prompt
 from dotenv import load_dotenv
 from google import genai
-from google.genai.types import Content, Part
+from google.genai.types import Content, GenerateContentConfig, Part
 
 # Load all environment variables from a .env file if it exists
 _ = load_dotenv()
@@ -30,7 +31,11 @@ def main() -> None:
     client = genai.Client(api_key=gemini_api_key)
 
     messages: list[Content] = [Content(role="user", parts=[Part(text=args.user_prompt)])]
-    response = client.models.generate_content(model=GeminiModels.GEMINI_2_5_FLASH, contents=messages)  # pyright: ignore[reportUnknownMemberType]
+    response = client.models.generate_content(  # pyright: ignore[reportUnknownMemberType]
+        model=GeminiModels.GEMINI_2_5_FLASH,
+        contents=messages,
+        config=GenerateContentConfig(system_instruction=system_prompt)
+    )
 
     metadata = response.usage_metadata
     if not metadata:
