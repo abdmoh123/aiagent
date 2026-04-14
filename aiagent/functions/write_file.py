@@ -7,6 +7,25 @@ from aiagent.utils.validation import (
     generate_error_message,
     is_path_in_working_dir,
 )
+from google.genai import types
+
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes content to a file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the file to write to",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="Content to write to the file",
+            ),
+        },
+    ),
+)
 
 
 def write_file(working_directory: str, file_path: str, content: str) -> str:

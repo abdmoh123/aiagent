@@ -9,6 +9,26 @@ from aiagent.utils.validation import (
     is_path_in_working_dir,
     is_path_type_valid,
 )
+from google.genai import types
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs an arbitrary python script",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the python script to run",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(type=types.Type.STRING),
+                description="Optional list of arguments to pass to the python script",
+            ),
+        },
+    ),
+)
 
 
 def run_python_file(

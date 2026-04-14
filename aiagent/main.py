@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from aiagent.config import gemini_api_key
 from aiagent.models import GeminiModels
 from aiagent.prompts import system_prompt
+from aiagent.tools import available_functions
 from dotenv import load_dotenv
 from google import genai
 from google.genai.types import Content, GenerateContentConfig, Part
@@ -34,7 +35,10 @@ def main() -> None:
     response = client.models.generate_content(  # pyright: ignore[reportUnknownMemberType]
         model=GeminiModels.GEMINI_2_5_FLASH,
         contents=messages,
-        config=GenerateContentConfig(system_instruction=system_prompt)
+        config=GenerateContentConfig(
+            tools=[available_functions],
+            system_instruction=system_prompt,
+        )
     )
 
     metadata = response.usage_metadata
@@ -50,7 +54,12 @@ def main() -> None:
         print(f"User prompt: {args.user_prompt}")
         print(f"Prompt tokens: {prompt_token_count}")
         print(f"Response tokens: {response_token_count}")
-    print(f"Response:\n{response.text}")
+
+    if response.function_calls:
+        for function_call in response.function_calls:
+            print(f"Calling function: {function_call.name}({function_call.args})")
+    else:
+        print(f"Response:\n{response.text}")
 
 
 if __name__ == "__main__":
