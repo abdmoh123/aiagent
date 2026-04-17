@@ -2,10 +2,12 @@
 
 from aiagent.functions.get_files_info import get_files_info
 
-current_result: str = get_files_info("calculator", ".")
-pkg_result: str = get_files_info("calculator", "pkg")
-bin_result: str = get_files_info("calculator", "/bin")
-parent_result: str = get_files_info("calculator", "../")
+calculator_path: str = "aiagent/calculator"
+
+current_result: str = get_files_info(calculator_path, ".")
+pkg_result: str = get_files_info(calculator_path, "pkg")
+bin_result: str = get_files_info(calculator_path, "/bin")
+parent_result: str = get_files_info(calculator_path, "../")
 
 results = [current_result, pkg_result, bin_result, parent_result]
 
