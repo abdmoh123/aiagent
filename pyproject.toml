@@ -16,6 +16,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["aiagent/"]
 
+[tool.basedpyright]
+exclude = ["aiagent/calculator/", "**/__pycache__", "**/.*", "**/node_modules"]
+
 [tool.mypy]
 exclude = "aiagent/calculator/"
 strict = true
