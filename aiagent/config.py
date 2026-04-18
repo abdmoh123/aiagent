@@ -1,6 +1,14 @@
 """Config module for the ai-agent project."""
 
 import os
+from dataclasses import dataclass
+
+
+@dataclass()
+class AppArgs:
+    """Dataclass representing the arguments a user can pass through the CLI."""
+    user_prompt: str
+    verbose: bool = False
 
 
 def get_env(env_var: str) -> str:
